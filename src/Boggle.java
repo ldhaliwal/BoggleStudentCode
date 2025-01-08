@@ -15,6 +15,9 @@ public class Boggle {
             dictTrie.insertHelper(word);
         }
 
+        // Create a TST for the dictionary
+        TST goodWordsTrie = new TST();
+
         int rows = board.length;
         int cols = board[0].length;
         boolean[][] visited = new boolean[rows][cols];
@@ -23,7 +26,7 @@ public class Boggle {
         // loop through each letter on the board and call dfs
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                dfs(board, i, j, "", dictTrie, goodWords, visited);
+                dfs(board, i, j, "", dictTrie, goodWords, goodWordsTrie, visited);
             }
         }
 
@@ -36,7 +39,7 @@ public class Boggle {
         return sol;
     }
 
-    private static void dfs(char[][] board, int row, int col, String prefix, TST dictTrie, ArrayList<String> goodWords, boolean[][] visited) {
+    private static void dfs(char[][] board, int row, int col, String prefix, TST dictTrie, ArrayList<String> goodWords, TST goodWordsTrie, boolean[][] visited) {
         if (row < 0 || col < 0 || row >= board.length || col >= board[0].length || visited[row][col]) {
             return;
         }
@@ -49,8 +52,9 @@ public class Boggle {
         }
 
         // if its a valid word, add it to the list
-        if (dictTrie.lookupHelper(prefix)) {
+        if (dictTrie.lookupHelper(prefix) && !goodWordsTrie.lookupHelper(prefix)) {
             goodWords.add(prefix);
+            goodWordsTrie.insertHelper(prefix);
         }
 
         // mark as visited
@@ -60,7 +64,7 @@ public class Boggle {
         for (int[] dir : DIRECTIONS) {
             int newRow = row + dir[0];
             int newCol = col + dir[1];
-            dfs(board, newRow, newCol, prefix, dictTrie, goodWords, visited);
+            dfs(board, newRow, newCol, prefix, dictTrie, goodWords, goodWordsTrie, visited);
         }
 
         // Backtrack and revoke visited status
