@@ -8,6 +8,9 @@ public class Boggle {
 
         ArrayList<String> goodWords = new ArrayList<>();
 
+        // Create a TST for the goodWords to help with lookup time
+        TST goodWordsTrie = new TST();
+
         // Create a TST for the dictionary
         TST dictTrie = new TST();
 
@@ -15,22 +18,16 @@ public class Boggle {
             dictTrie.insertHelper(word);
         }
 
-        // Create a TST for the dictionary
-        TST goodWordsTrie = new TST();
-
         int rows = board.length;
         int cols = board[0].length;
         boolean[][] visited = new boolean[rows][cols];
 
-
-        // loop through each letter on the board and call dfs
+        // Loop through each letter on the board and call dfs
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 dfs(board, i, j, "", dictTrie, goodWords, goodWordsTrie, visited);
             }
         }
-
-        // some way to remove duplicates or do that in the dfs method?
 
         // Convert the list into a sorted array of strings, then return the array.
         String[] sol = new String[goodWords.size()];
@@ -40,6 +37,7 @@ public class Boggle {
     }
 
     private static void dfs(char[][] board, int row, int col, String prefix, TST dictTrie, ArrayList<String> goodWords, TST goodWordsTrie, boolean[][] visited) {
+        // Base case checks that the current cell isn't out of bounds
         if (row < 0 || col < 0 || row >= board.length || col >= board[0].length || visited[row][col]) {
             return;
         }
@@ -51,16 +49,16 @@ public class Boggle {
             return;
         }
 
-        // if its a valid word, add it to the list
-        if (dictTrie.lookupHelper(prefix) && !goodWordsTrie.lookupHelper(prefix)) {
+        // If it's a valid word and not a duplicate, add it to the list
+        if (!goodWordsTrie.lookupHelper(prefix) && dictTrie.lookupHelper(prefix)) {
             goodWords.add(prefix);
             goodWordsTrie.insertHelper(prefix);
         }
 
-        // mark as visited
+        // Mark as visited
         visited[row][col] = true;
 
-        // go through all the adjacent cells
+        // Go through all the adjacent cells
         for (int[] dir : DIRECTIONS) {
             int newRow = row + dir[0];
             int newCol = col + dir[1];
