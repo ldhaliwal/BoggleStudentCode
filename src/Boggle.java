@@ -6,7 +6,7 @@ public class Boggle {
 
     public static String[] findWords(char[][] board, String[] dictionary) {
 
-        ArrayList<String> goodWords = new ArrayList<String>();
+        ArrayList<String> goodWords = new ArrayList<>();
 
         // Create a TST for the dictionary
         TST dictTrie = new TST();
