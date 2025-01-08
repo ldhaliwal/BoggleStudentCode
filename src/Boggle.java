@@ -35,4 +35,35 @@ public class Boggle {
         Arrays.sort(sol);
         return sol;
     }
+
+    private static void dfs(char[][] board, int row, int col, String prefix, TST dictTrie, ArrayList<String> goodWords, boolean[][] visited) {
+        if (row < 0 || col < 0 || row >= board.length || col >= board[0].length || visited[row][col]) {
+            return;
+        }
+
+        prefix += board[row][col];
+
+        // backtrack if no words in the dictionary start with the prefix
+        if (!dictTrie.startsWith(prefix)) {
+            return;
+        }
+
+        // if its a valid word, add it to the list
+        if (dictTrie.lookupHelper(prefix)) {
+            goodWords.add(prefix);
+        }
+
+        // mark as visited
+        visited[row][col] = true;
+
+        // go through all the adjacent cells
+        for (int[] dir : DIRECTIONS) {
+            int newRow = row + dir[0];
+            int newCol = col + dir[1];
+            dfs(board, newRow, newCol, prefix, dictTrie, goodWords, visited);
+        }
+
+        // Backtrack and revoke visited status
+        visited[row][col] = false;
+    }
 }
