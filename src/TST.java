@@ -56,7 +56,7 @@ public class TST {
         return lookup(current, s, index, true);
     }
 
-    public boolean lookup(TST_Node current, String s, int index, boolean checkWord) {
+    public boolean lookup(TST_Node current, String s, int index, boolean checkWholeWord) {
         // If the current node is null, the word doesn't exist
         if (current == null) {
             return false;
@@ -67,23 +67,23 @@ public class TST {
 
         // If the character in the node is greater than the current character in the string, go left
         if (c < current.getCharacter()) {
-            return lookup(current.getLeft(), s, index, checkWord);
+            return lookup(current.getLeft(), s, index, checkWholeWord);
         }
 
         // If the character in the node is less than the current character in the string, go right
         else if (c > current.getCharacter()) {
-            return lookup(current.getRight(), s, index, checkWord);
+            return lookup(current.getRight(), s, index, checkWholeWord);
         }
 
         // If the characters are equal
         else {
             // If we're at the end of the string, check if it's a word
             if (index == s.length() - 1) {
-                return !checkWord || current.isWord();
+                return !checkWholeWord || current.isWord();
             }
 
             // Otherwise, move to the center and continue to the next character
-            return lookup(current.getCenter(), s, index + 1, checkWord);
+            return lookup(current.getCenter(), s, index + 1, checkWholeWord);
         }
     }
 
