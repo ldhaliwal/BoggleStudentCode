@@ -37,13 +37,18 @@ public class Boggle {
     }
 
     private static void dfs(char[][] board, int row, int col, String prefix, TST dictTrie, ArrayList<String> goodWords, TST goodWordsTrie, boolean[][] visited) {
-        // Base case checks that the current cell isn't out of bounds, already visited, or there are no words starting with the prefix
-        if (row < 0 || col < 0 || row >= board.length || col >= board[0].length || visited[row][col] || !dictTrie.startsWith(prefix)) {
+        // Base case checks that the current cell isn't out of bounds, already visited,
+        if (row < 0 || col < 0 || row >= board.length || col >= board[0].length || visited[row][col]) {
             return;
         }
 
         // Update prefix
         prefix += board[row][col];
+
+        // Check if there are no words starting with the prefix
+        if(!dictTrie.startsWith(prefix)){
+            return;
+        }
 
         // If it's a valid word and not a duplicate, add it to the list
         if (!goodWordsTrie.lookupHelper(prefix) && dictTrie.lookupHelper(prefix)) {
